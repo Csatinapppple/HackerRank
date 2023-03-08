@@ -96,3 +96,131 @@ int main() {
 }
 
 //does not work for some reason
+
+/*
+Extra c code
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
+
+enum Flags1{
+  COMBINE = 'C',
+  SPLIT = 'S', 
+};
+
+enum Flags2{
+  CLASS = 'C',
+  VARIABLE = 'V',
+  METHOD = 'M',
+};
+
+
+char *split(const char *input){
+  int spaces=0;
+  for(size_t i=0;input[i]!=0;i++){
+      if(isupper(input[i])){
+          spaces++;
+      }
+  }
+  char *ret = malloc((strlen(input)+spaces+1)*(sizeof(char)));
+  size_t j = 0;
+  for(size_t i=0;input[i]!=0;i++){
+      if(i!=0 && isupper(input[i])){
+          ret[j]=' ',j++;
+      }
+      ret[j++]=tolower(input[i]);
+  }
+  ret[j]=0;
+  return ret;
+}
+
+char *combine(const char *input){
+  int spaces=0;
+  for(size_t i=0;input[i]!=0;i++){
+      if(isupper(input[i])){
+          spaces++;
+      }
+  }
+  char *ret = malloc((strlen(input)-spaces+1)*(sizeof(char)));
+    size_t j=0;
+    for(size_t i=0;input[i]!=0;i++){
+      if(input[i]!=' '){
+          ret[j++]=input[i];
+      } else ret[j++]=toupper(input[++i]);
+  }
+  ret[j]=0;
+  return ret;
+}
+
+char *slice_str(const char * str, size_t start, size_t end)
+{
+  char *buffer = malloc((strlen(str)+1)*(sizeof(char)));
+  size_t j = 0;
+  for ( size_t i = start; i < end; ++i ) {
+      buffer[j++] = str[i];
+  }
+  buffer[j] = 0;
+  return buffer;
+}
+
+bool isMethod(const char* input){
+  size_t len = strlen(input);
+  
+  if(len>=3 && input[len-2]=='('&& input[len-1]==')')
+    return true;
+  
+  return false;
+}
+
+char *convert(char *input){
+  char f1=input[0],f2=input[2];
+  char *hold = slice_str(input,4,strlen(input));
+  char *ret;
+  size_t len;
+
+  switch(f1){
+    case SPLIT:
+      ret = split(hold);
+      len = strlen(ret);
+      free(hold);
+      if(isMethod(ret)){
+        ret = realloc(ret,(len-2)*sizeof(char)),len-=2;
+        ret[len]=0;
+      }
+      return ret;
+    case COMBINE:
+      ret = combine(hold);
+      free(hold);
+      len=strlen(ret);
+      break;
+  }
+
+  switch(f2){
+    case METHOD:
+      if(!isMethod(ret)){
+        ret = realloc(ret,(len+2)*(sizeof(char))),len+=2;
+        ret[len]=0,ret[len-1]=')',ret[len-2]='(';
+      }
+      break;
+    case CLASS:
+      if(isMethod(ret)){
+        ret = realloc(ret,(len-2)*(sizeof(char))),len-=2;
+        ret[len]=0;
+      }
+      ret[0]=toupper(ret[0]);
+      break;
+    case VARIABLE:
+      if(isMethod(ret)){
+        ret = realloc(ret,(len-2)*(sizeof(char))),len-=2;
+        ret[len]=0;
+      }
+      break;
+  }
+
+  return ret;
+}
+
+does not accept
+*/
